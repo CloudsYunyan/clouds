@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Clouds的资源库</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        .login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1a237e, #0d47a1);
+        }
+
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 360px;
+            text-align: center;
+        }
+
+        .login-container h2 {
+            color: #1a237e;
+            margin-bottom: 20px;
+        }
+
+        .content-page {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-section {
+            display: none;
+            margin-bottom: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .password-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .upload-section {
+            margin-top: 20px;
+            border: 2px dashed #1a237e;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            background-color: #f8f9fa;
+        }
+
+        .upload-section.dragover {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .content-tabs {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background: #f0f2f5;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .tab-button.active {
+            background: #1a237e;
+            color: white;
+        }
+
+        .file-container, .article-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .article-container {
+            display: none;
+        }
+
+        .file-item, .article-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .file-item:hover, .article-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .article-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+
+        .article-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #1a237e;
+            box-shadow: 0 0 0 2px rgba(26, 35, 126, 0.2);
+        }
+
+        button {
+            background-color: #1a237e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background-color: #283593;
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background-color: #d32f2f;
+        }
+
+        .delete-btn:hover {
+            background-color: #c62828;
+        }
+
+        .error {
+            color: #d32f2f;
+            margin-top: 10px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .upload-type-select {
+            margin-bottom: 20px;
+        }
+
+        .file-preview {
+            margin-top: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            display: none;
+            border: 1px solid #e0e0e0;
+        }
+
+        .file-preview input[type="text"] {
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .drag-text {
+            color: #666;
+            margin: 15px 0;
+            font-size: 16px;
+        }
+
+        #articleUploadArea textarea {
+            height: 300px;
+            resize: vertical;
+        }
+
+        .download-btn {
+            background-color: #2e7d32;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 15px;
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .content-page {
+                padding: 10px;
+            }
+
+            .file-container, .article-container {
+                grid-template-columns: 1fr;
+            }
+
+            .login-container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            .article-content {
+                width: 95%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+ <body>
+    <!-- 登录页面 -->
+    <div id="loginPage" class="login-page">
+        <div class="login-container">
+            <h2>Clouds的资源库</h2>
+            <p>请输入访问密码</p>
+            <form id="loginForm" onsubmit="return false;">
+                <input type="password" id="password" placeholder="请输入密码" required>
+                <p id="errorMsg" class="error">密码错误</p>
+                <button type="button" onclick="handleLogin()">进入</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 内容页面 -->
+    <div id="contentPage" class="content-page">
+        <div class="header">
+            <h1 id="pageTitle">Clouds的资源库</h1>
+            <button onclick="logout()">退出</button>
+        </div>
+
+        <!-- 管理员部分 -->
+        <div id="adminSection" class="admin-section">
+            <div class="password-info">
+                <h3>当前用户密码信息</h3>
+                <p>用户密码: <span id="currentUserPassword"></span></p>
+                <p>下次更新时间: <span id="nextUpdate"></span></p>
+            </div>
+
+            <div class="upload-section" id="dropZone">
+                <div class="upload-type-select">
+                    <button onclick="switchUploadType('file')" id="fileUploadBtn" class="tab-button active">上传文件</button>
+                    <button onclick="switchUploadType('article')" id="articleUploadBtn" class="tab-button">发布文章</button>
+                </div>
+
+                <div id="fileUploadArea">
+                    <p class="drag-text">拖拽文件到此处或点击选择文件</p>
+                    <input type="file" id="fileInput" style="display: none;">
+                    <button onclick="document.getElementById('fileInput').click()">选择文件</button>
+                    
+                    <div class="file-preview" id="filePreview">
+                        <p>已选择文件: <span id="selectedFileName"></span></p>
+                        <input type="text" id="newFileName" placeholder="输入新文件名（可选）">
+                        <input type="text" id="fileLink" placeholder="输入文件下载链接（网盘地址）" required>
+                        <button onclick="confirmUpload()">确认上传</button>
+                        <button onclick="cancelUpload()" class="delete-btn">取消</button>
+                    </div>
+                </div>
+
+                <div id="articleUploadArea" style="display: none;">
+                    <input type="text" id="articleTitle" placeholder="文章标题">
+                    <textarea id="articleContent" placeholder="文章内容"></textarea>
+                    <button onclick="submitArticle()">发布文章</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容切换按钮 -->
+        <div class="content-tabs">
+            <button onclick="switchContentType('files')" id="filesTab" class="tab-button active">文件资源</button>
+            <button onclick="switchContentType('articles')" id="articlesTab" class="tab-button">文章资源</button>
+        </div>
+
+        <!-- 文件和文章列表 -->
+        <div class="file-container" id="fileList"></div>
+        <div class="article-container" id="articleList"></div>
+
+        <!-- 文章查看弹窗 -->
+        <div class="article-overlay" id="articleOverlay"></div>
+        <div class="article-content" id="articleContent">
+            <button class="close-button" onclick="closeArticle()">×</button>
+            <h2 id="articleViewTitle"></h2>
+            <div id="articleBody"></div>
+        </div>
+    </div><!-- 这里放第二部分：body部分的 HTML 结构 -->
+    
+        <script>
+        // 常量定义
+        const ADMIN_PASSWORD = "admin2024";
+        const PASSWORD_UPDATE_INTERVAL = 48 * 60 * 60 * 1000; // 48小时
+
+        // 全局变量
+        let currentUploadType = 'file';
+        let currentContentType = 'files';
+        let currentFile = null;
+
+        // 页面元素
+        const loginPage = document.getElementById('loginPage');
+        const contentPage = document.getElementById('contentPage');
+        const adminSection = document.getElementById('adminSection');
+        const pageTitle = document.getElementById('pageTitle');
+        const dropZone = document.getElementById('dropZone');
+        const filePreview = document.getElementById('filePreview');
+        const selectedFileName = document.getElementById('selectedFileName');
+        const newFileName = document.getElementById('newFileName');
+
+        // 生成12位随机数字密码
+        function generatePassword() {
+            let password = '';
+            for(let i = 0; i < 12; i++) {
+                password += Math.floor(Math.random() * 10);
+            }
+            return password;
+        }
+
+        // 检查并更新用户密码
+        function checkAndUpdatePassword() {
+            let lastUpdate = localStorage.getItem('lastUpdate');
+            const now = new Date().getTime();
+
+            if(!lastUpdate || (now - parseInt(lastUpdate)) > PASSWORD_UPDATE_INTERVAL) {
+                const newPassword = generatePassword();
+                localStorage.setItem('userPassword', newPassword);
+                localStorage.setItem('lastUpdate', now);
+            }
+        }
+
+        // 初始化检查密码
+        checkAndUpdatePassword();
+
+        // 登录处理函数
+        function handleLogin() {
+            const inputPassword = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            const userPassword = localStorage.getItem('userPassword');
+            
+            if(inputPassword === ADMIN_PASSWORD) {
+                showContent('admin');
+            } else if(inputPassword === userPassword) {
+                showContent('user');
+            } else {
+                errorMsg.style.display = 'block';
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // 回车键登录
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleLogin();
+            }
+        });
+
+        // 显示内容页面
+        function showContent(userType) {
+            sessionStorage.setItem('userType', userType);
+            loginPage.style.display = 'none';
+            contentPage.style.display = 'block';
+            
+            if(userType === 'admin') {
+                pageTitle.textContent = 'Clouds的资源库 - 管理面板';
+                adminSection.style.display = 'block';
+                updateAdminInfo();
+            } else {
+                pageTitle.textContent = 'Clouds的资源库';
+                adminSection.style.display = 'none';
+            }
+            
+            updateFileList(userType);
+            updateArticleList(userType);
+        }
+
+        // 更新管理员信息
+        function updateAdminInfo() {
+            const userPassword = localStorage.getItem('userPassword');
+            const lastUpdate = parseInt(localStorage.getItem('lastUpdate'));
+            const nextUpdateTime = new Date(lastUpdate + PASSWORD_UPDATE_INTERVAL);
+            
+            document.getElementById('currentUserPassword').textContent = userPassword;
+            document.getElementById('nextUpdate').textContent = nextUpdateTime.toLocaleString();
+        }
+
+        // 切换上传类型
+        function switchUploadType(type) {
+            currentUploadType = type;
+            document.getElementById('fileUploadArea').style.display = type === 'file' ? 'block' : 'none';
+            document.getElementById('articleUploadArea').style.display = type === 'article' ? 'block' : 'none';
+            document.getElementById('fileUploadBtn').classList.toggle('active', type === 'file');
+            document.getElementById('articleUploadBtn').classList.toggle('active', type === 'article');
+        }
+
+        // 切换内容类型
+        function switchContentType(type) {
+            currentContentType = type;
+            document.getElementById('fileList').style.display = type === 'files' ? 'grid' : 'none';
+            document.getElementById('articleList').style.display = type === 'articles' ? 'grid' : 'none';
+            document.getElementById('filesTab').classList.toggle('active', type === 'files');
+            document.getElementById('articlesTab').classList.toggle('active', type === 'articles');
+            
+            if(type === 'files') {
+                updateFileList(sessionStorage.getItem('userType'));
+            } else {
+                updateArticleList(sessionStorage.getItem('userType'));
+            }
+        }
+
+        // 文件拖拽处理
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            
+            if(currentUploadType === 'file') {
+                const file = e.dataTransfer.files[0];
+                if(file) handleFile(file);
+            }
+        });
+
+        // 文件选择处理
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if(file) handleFile(file);
+        });
+
+        // 处理选择的文件
+        function handleFile(file) {
+            currentFile = file;
+            selectedFileName.textContent = file.name;
+            newFileName.value = file.name.split('.')[0];
+            filePreview.style.display = 'block';
+        }
+
+        // 确认上传文件
+        function confirmUpload() {
+            if (!currentFile) return;
+
+            const fileLink = document.getElementById('fileLink').value.trim();
+            if (!fileLink) {
+                alert('请输入文件下载链接！');
+                return;
+            }
+
+            let finalFileName = newFileName.value.trim();
+            const fileExt = currentFile.name.split('.').pop();
+
+            if (!finalFileName) {
+                finalFileName = currentFile.name.split('.')[0];
+            }
+
+            finalFileName = `${finalFileName}.${fileExt}`;
+
+            const files = JSON.parse(localStorage.getItem('files') || '[]');
+            files.push({
+                name: finalFileName,
+                originalName: currentFile.name,
+                uploadTime: new Date().getTime(),
+                size: currentFile.size,
+                link: fileLink
+            });
+            localStorage.setItem('files', JSON.stringify(files));
+
+            updateFileList('admin');
+            cancelUpload();
+            alert('文件添加成功！');
+        }
+
+        // 取消上传
+        function cancelUpload() {
+            currentFile = null;
+            filePreview.style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('newFileName').value = '';
+            document.getElementById('fileLink').value = '';
+        }
+
+        // 提交文章
+        function submitArticle() {
+            const title = document.getElementById('articleTitle').value.trim();
+            const content = document.getElementById('articleContent').value.trim();
+            
+            if(!title || !content) {
+                alert('标题和内容不能为空！');
+                return;
+            }
+
+            const articles = JSON.parse(localStorage.getItem('articles') || '[]');
+            articles.push({
+                title: title,
+                content: content,
+                createTime: new Date().getTime()
+            });
+            localStorage.setItem('articles', JSON.stringify(articles));
+            
+            document.getElementById('articleTitle').value = '';
+            document.getElementById('articleContent').value = '';
+            alert('文章发布成功！');
+            
+            if(currentContentType === 'articles') {
+                updateArticleList('admin');
+            }
+        }
+
+        // 更新文章列表
+        function updateArticleList(userType) {
+            const articles = JSON.parse(localStorage.getItem('articles') || '[]');
+            const articleList = document.getElementById('articleList');
+            articleList.innerHTML = '';
+            
+            articles.forEach((article, index) => {
+                const articleItem = document.createElement('div');
+                articleItem.className = 'article-item';
+                
+                let html = `
+                    <h3>${article.title}</h3>
+                    <p>发布时间: ${new Date(article.createTime).toLocaleString()}</p>
+                    <button onclick="viewArticle(${index})">查看文章</button>
+                `;
+                
+                if(userType === 'admin') {
+                    html += `<button class="delete-btn" onclick="deleteArticle(${index})">删除</button>`;
+                }
+                
+                articleItem.innerHTML = html;
+                articleList.appendChild(articleItem);
+            });
+        }
+
+        // 查看文章
+        function viewArticle(index) {
+            const articles = JSON.parse(localStorage.getItem('articles') || '[]');
+            const article = articles[index];
+            
+            document.getElementById('articleViewTitle').textContent = article.title;
+            document.getElementById('articleBody').textContent = article.content;
+            document.getElementById('articleOverlay').style.display = 'block';
+            document.getElementById('articleContent').style.display = 'block';
+        }
+
+        // 关闭文章
+        function closeArticle() {
+            document.getElementById('articleOverlay').style.display = 'none';
+            document.getElementById('articleContent').style.display = 'none';
+        }
+
+        // 删除文章
+        function deleteArticle(index) {
+            if(confirm('确定要删除这篇文章吗？')) {
+                const articles = JSON.parse(localStorage.getItem('articles') || '[]');
+                articles.splice(index, 1);
+                localStorage.setItem('articles', JSON.stringify(articles));
+                updateArticleList('admin');
+            }
+        }
+
+        // 更新文件列表
+        function updateFileList(userType) {
+            const files = JSON.parse(localStorage.getItem('files') || '[]');
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            
+            files.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                
+                let html = `
+                    <h3>${file.name}</h3>
+                    <p>上传时间: ${new Date(file.uploadTime).toLocaleString()}</p>
+                    <p>文件大小: ${formatFileSize(file.size)}</p>
+                    <a href="${file.link}" target="_blank" class="download-btn">访问下载链接</a>
+                `;
+                
+                if(userType === 'admin') {
+                    html += `<button class="delete-btn" onclick="deleteFile(${index})">删除</button>`;
+                }
+                
+                fileItem.innerHTML = html;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // 删除文件
+        function deleteFile(index) {
+            if(confirm('确定要删除这个文件吗？')) {
+                const files = JSON.parse(localStorage.getItem('files') || '[]');
+                files.splice(index, 1);
+                localStorage.setItem('files', JSON.stringify(files));
+                updateFileList('admin');
+            }
+        }
+
+        // 退出登录
+        function logout() {
+            loginPage.style.display = 'flex';
+            contentPage.style.display = 'none';
+            document.getElementById('password').value = '';
+        }
+    </script>
+</body>
+</html><!-- 这里放第三部分：JavaScript 代码，放在 body 结束标签之前 -->
