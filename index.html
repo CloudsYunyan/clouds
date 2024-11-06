@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Clouds的资源库</title>
+    <style>
+    :root {
+    /* 浅色主题 */
+    --bg-primary: #f5f5f5;
+    --bg-secondary: #ffffff;
+    --text-primary: #2c3e50;
+    --text-secondary: #34495e;
+    --accent-color: #546e7a;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 深色主题 */
+[data-theme="dark"] {
+    --bg-primary: rgba(26, 26, 26, 0.95);
+    --bg-secondary: rgba(45, 45, 45, 0.95);
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --accent-color: #78909c;
+    --border-color: #404040;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+}
+
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('ast.jpeg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.login-container {
+    background-color: var(--bg-secondary);
+    padding: 40px 60px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px var(--shadow-color);
+    width: 480px;
+    text-align: center;
+}
+
+.login-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.login-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+}
+        .content-page {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px;
+            background-color: var(--bg-secondary);
+            border-radius: 12px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            margin-bottom: 30px;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .social-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            background-color: var(--bg-secondary);
+            transition: all 0.3s;
+            border: 1px solid var(--border-color);
+        }
+
+        .social-link:hover {
+            background-color: var(--accent-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            margin-left: 10px;
+            font-size: 20px;
+        }
+
+        .search-container {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 16px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(84, 110, 122, 0.2);
+        }
+
+        .admin-section {
+            display: none;
+            margin-bottom: 20px;
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+        .password-info {
+            background-color: var(--bg-primary);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .upload-section {
+            margin-top: 20px;
+            border: 2px dashed var(--accent-color);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+            background-color: var(--bg-primary);
+        }
+
+        .upload-section.dragover {
+            background-color: var(--bg-secondary);
+            border-color: var(--accent-color);
+        }
+
+        .content-tabs {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background: var(--bg-primary);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: var(--text-primary);
+        }
+
+        .tab-button.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .file-container, .article-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .article-container {
+            display: none;
+        }
+
+        .file-item, .article-item {
+            background-color: var(--bg-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            transition: transform 0.3s;
+            border: 1px solid var(--border-color);
+        }
+
+        .file-item:hover, .article-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .article-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .article-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            background-color: var(--bg-secondary);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px var(--shadow-color);
+            display: none;
+            z-index: 1000;
+            max-height: 90vh;
+            overflow-y: auto;
+            color: var(--text-primary);
+        }
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(84, 110, 122, 0.2);
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 5px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+        }
+
+        .delete-btn {
+            background-color: #d32f2f;
+        }
+
+        .delete-btn:hover {
+            background-color: #c62828;
+        }
+
+        .error {
+            color: #d32f2f;
+            margin-top: 10px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .upload-type-select {
+            margin-bottom: 20px;
+        }
+
+        .file-preview {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            display: none;
+            border: 1px solid var(--border-color);
+        }
+
+        .file-preview input[type="text"] {
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .drag-text {
+            color: var(--text-secondary);
+            margin: 15px 0;
+            font-size: 16px;
+        }
+
+        #articleUploadArea textarea {
+            height: 300px;
+            resize: vertical;
+        }
+
+        .download-btn {
+            background-color: #2e7d32;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 15px;
+            margin-right: 10px;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: #388e3c;
+            transform: translateY(-2px);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .content-page {
+                padding: 10px;
+            }
+
+            .file-container, .article-container {
+                grid-template-columns: 1fr;
+            }
+
+            .login-container {
+                width: 90%;
+                padding: 20px;
+            }
+
+            .article-content {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .social-links {
+                flex-wrap: wrap;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+</body>
+    <!-- 登录页面 -->
+<div id="loginPage" class="login-page">
+    <div class="login-container">
+        <div class="login-header">
+            <h2>Clouds的资源库</h2>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </div>
+        <div class="social-links">
+            <a href="https://github.com/你的GitHub用户名" target="_blank" class="social-link">
+                GitHub
+            </a>
+            <a href="https://space.bilibili.com/你的ID" target="_blank" class="social-link">
+                Bilibili
+            </a>
+            <a href="https://blog.csdn.net/你的ID" target="_blank" class="social-link">
+                CSDN
+            </a>
+            <!-- 添加更多社交媒体链接 -->
+        </div>
+        <div class="login-form">
+            <p>请输入访问密码</p>
+            <form id="loginForm" onsubmit="return false;">
+                <input type="password" id="password" placeholder="请输入密码" required>
+                <p id="errorMsg" class="error">密码错误</p>
+                <button type="button" onclick="handleLogin()">进入</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!-- 内容页面 -->
+    <div id="contentPage" class="content-page">
+        <div class="header">
+            <div class="header-left">
+                <h1 id="pageTitle">Clouds的资源库</h1>
+                <div class="social-links">
+                    <a href="https://github.com/你的GitHub用户名" target="_blank" class="social-link">
+                        GitHub
+                    </a>
+                    <a href="https://space.bilibili.com/你的ID" target="_blank" class="social-link">
+                        Bilibili
+                    </a>
+                    <a href="https://blog.csdn.net/你的ID" target="_blank" class="social-link">
+                        CSDN
+                    </a>
+                    <!-- 添加更多社交媒体链接 -->
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <span id="themeIcon">🌙</span>
+                </button>
+                <button onclick="logout()">退出</button>
+            </div>
+        </div>
+
+        <!-- 管理员部分 -->
+        <div id="adminSection" class="admin-section">
+            <div class="password-info">
+                <h3>当前用户密码信息</h3>
+                <p>用户密码: <span id="currentUserPassword"></span></p>
+                <p>下次更新时间: <span id="nextUpdate"></span></p>
+            </div>
+
+            <div class="upload-section" id="dropZone">
+                <div class="upload-type-select">
+                    <button onclick="switchUploadType('file')" id="fileUploadBtn" class="tab-button active">上传文件</button>
+                    <button onclick="switchUploadType('article')" id="articleUploadBtn" class="tab-button">发布文章</button>
+                </div>
+
+                <div id="fileUploadArea">
+                    <p class="drag-text">拖拽文件到此处或点击选择文件</p>
+                    <input type="file" id="fileInput" style="display: none;">
+                    <button onclick="document.getElementById('fileInput').click()">选择文件</button>
+                    
+                    <div class="file-preview" id="filePreview">
+                        <p>已选择文件: <span id="selectedFileName"></span></p>
+                        <input type="text" id="newFileName" placeholder="输入新文件名（可选）">
+                        <input type="text" id="fileLink" placeholder="输入文件下载链接（网盘地址）" required>
+                        <button onclick="confirmUpload()">确认上传</button>
+                        <button onclick="cancelUpload()" class="delete-btn">取消</button>
+                    </div>
+                </div>
+
+                <div id="articleUploadArea" style="display: none;">
+                    <input type="text" id="articleTitle" placeholder="文章标题">
+                    <textarea id="articleContent" placeholder="文章内容"></textarea>
+                    <button onclick="submitArticle()">发布文章</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 搜索框 -->
+        <div class="search-container">
+            <input 
+                type="text" 
+                id="searchInput" 
+                class="search-input" 
+                placeholder="搜索文件或文章..."
+                oninput="handleSearch()"
+            >
+        </div>
+
+        <!-- 内容切换按钮 -->
+        <div class="content-tabs">
+            <button onclick="switchContentType('files')" id="filesTab" class="tab-button active">文件资源</button>
+            <button onclick="switchContentType('articles')" id="articlesTab" class="tab-button">文章资源</button>
+        </div>
+
+        <!-- 文件和文章列表 -->
+        <div class="file-container" id="fileList"></div>
+        <div class="article-container" id="articleList"></div>
+
+        <!-- 文章查看弹窗 -->
+        <div class="article-overlay" id="articleOverlay"></div>
+        <div class="article-content" id="articleContent">
+            <button class="close-button" onclick="closeArticle()">×</button>
+            <h2 id="articleViewTitle"></h2>
+            <div id="articleBody"></div>
+        </div>
+    </div>
+    <script>
+        // 常量定义
+        const ADMIN_PASSWORD = "admin2024";
+        const PASSWORD_UPDATE_INTERVAL = 48 * 60 * 60 * 1000; // 48小时
+
+        // 全局变量
+        let currentUploadType = 'file';
+        let currentContentType = 'files';
+        let currentFile = null;
+
+        // 页面元素
+        const loginPage = document.getElementById('loginPage');
+        const contentPage = document.getElementById('contentPage');
+        const adminSection = document.getElementById('adminSection');
+        const pageTitle = document.getElementById('pageTitle');
+        const dropZone = document.getElementById('dropZone');
+        const filePreview = document.getElementById('filePreview');
+        const selectedFileName = document.getElementById('selectedFileName');
+        const newFileName = document.getElementById('newFileName');
+
+        // 主题切换功能
+        function toggleTheme() {
+            const root = document.documentElement;
+            const currentTheme = root.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            const themeIcon = document.getElementById('themeIcon');
+            
+            root.setAttribute('data-theme', newTheme);
+            themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+            
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // 初始化主题
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const themeIcon = document.getElementById('themeIcon');
+            
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeIcon.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // 搜索功能
+        function handleSearch() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (currentContentType === 'files') {
+                searchFiles(searchTerm);
+            } else {
+                searchArticles(searchTerm);
+            }
+        }
+
+        async function searchFiles(searchTerm) {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                const files = data.files;
+                const fileList = document.getElementById('fileList');
+                fileList.innerHTML = '';
+                
+                const filteredFiles = files.filter(file => 
+                    file.name.toLowerCase().includes(searchTerm)
+                );
+                
+                filteredFiles.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    
+                    let html = `
+                        <h3>${file.name}</h3>
+                        <p>上传时间: ${file.uploadTime}</p>
+                        <p>文件大小: ${file.size}</p>
+                        <a href="${file.link}" target="_blank" class="download-btn">访问下载链接</a>
+                    `;
+                    
+                    if(sessionStorage.getItem('userType') === 'admin') {
+                        html += `<button class="delete-btn" onclick="deleteFile(${index})">删除</button>`;
+                    }
+                    
+                    fileItem.innerHTML = html;
+                    fileList.appendChild(fileItem);
+                });
+            } catch (error) {
+                console.error('Error searching files:', error);
+            }
+        }
+        async function searchArticles(searchTerm) {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                const articles = data.articles;
+                const articleList = document.getElementById('articleList');
+                articleList.innerHTML = '';
+                
+                const filteredArticles = articles.filter(article => 
+                    article.title.toLowerCase().includes(searchTerm) || 
+                    article.content.toLowerCase().includes(searchTerm)
+                );
+                
+                filteredArticles.forEach((article, index) => {
+                    const articleItem = document.createElement('div');
+                    articleItem.className = 'article-item';
+                    
+                    let html = `
+                        <h3>${article.title}</h3>
+                        <p>发布时间: ${article.uploadTime}</p>
+                        <button onclick="viewArticle(${index})">查看文章</button>
+                    `;
+                    
+                    if(sessionStorage.getItem('userType') === 'admin') {
+                        html += `<button class="delete-btn" onclick="deleteArticle(${index})">删除</button>`;
+                    }
+                    
+                    articleItem.innerHTML = html;
+                    articleList.appendChild(articleItem);
+                });
+            } catch (error) {
+                console.error('Error searching articles:', error);
+            }
+        }
+
+        // 生成12位随机数字密码
+        function generatePassword() {
+            let password = '';
+            for(let i = 0; i < 12; i++) {
+                password += Math.floor(Math.random() * 10);
+            }
+            return password;
+        }
+
+        // 检查并更新用户密码
+        function checkAndUpdatePassword() {
+            let lastUpdate = localStorage.getItem('lastUpdate');
+            const now = new Date().getTime();
+
+            if(!lastUpdate || (now - parseInt(lastUpdate)) > PASSWORD_UPDATE_INTERVAL) {
+                const newPassword = generatePassword();
+                localStorage.setItem('userPassword', newPassword);
+                localStorage.setItem('lastUpdate', now);
+            }
+        }
+
+        // 初始化检查密码
+        checkAndUpdatePassword();
+
+        // 登录处理函数
+        function handleLogin() {
+            const inputPassword = document.getElementById('password').value;
+            const errorMsg = document.getElementById('errorMsg');
+            const userPassword = localStorage.getItem('userPassword');
+            
+            if(inputPassword === ADMIN_PASSWORD) {
+                showContent('admin');
+            } else if(inputPassword === userPassword) {
+                showContent('user');
+            } else {
+                errorMsg.style.display = 'block';
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // 回车键登录
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleLogin();
+            }
+        });
+
+        // 显示内容页面
+        function showContent(userType) {
+            sessionStorage.setItem('userType', userType);
+            loginPage.style.display = 'none';
+            contentPage.style.display = 'block';
+            
+            if(userType === 'admin') {
+                pageTitle.textContent = 'Clouds的资源库 - 管理面板';
+                adminSection.style.display = 'block';
+                updateAdminInfo();
+            } else {
+                pageTitle.textContent = 'Clouds的资源库';
+                adminSection.style.display = 'none';
+            }
+            
+            updateFileList(userType);
+            updateArticleList(userType);
+        }
+                // 更新管理员信息
+                function updateAdminInfo() {
+            const userPassword = localStorage.getItem('userPassword');
+            const lastUpdate = parseInt(localStorage.getItem('lastUpdate'));
+            const nextUpdateTime = new Date(lastUpdate + PASSWORD_UPDATE_INTERVAL);
+            
+            document.getElementById('currentUserPassword').textContent = userPassword;
+            document.getElementById('nextUpdate').textContent = nextUpdateTime.toLocaleString();
+        }
+
+        // 切换上传类型
+        function switchUploadType(type) {
+            currentUploadType = type;
+            document.getElementById('fileUploadArea').style.display = type === 'file' ? 'block' : 'none';
+            document.getElementById('articleUploadArea').style.display = type === 'article' ? 'block' : 'none';
+            document.getElementById('fileUploadBtn').classList.toggle('active', type === 'file');
+            document.getElementById('articleUploadBtn').classList.toggle('active', type === 'article');
+        }
+
+        // 切换内容类型
+        function switchContentType(type) {
+            currentContentType = type;
+            document.getElementById('fileList').style.display = type === 'files' ? 'grid' : 'none';
+            document.getElementById('articleList').style.display = type === 'articles' ? 'grid' : 'none';
+            document.getElementById('filesTab').classList.toggle('active', type === 'files');
+            document.getElementById('articlesTab').classList.toggle('active', type === 'articles');
+            
+            // 更新搜索结果
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if (searchTerm) {
+                handleSearch();
+            }
+        }
+
+        // 文件拖拽处理
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            
+            if(currentUploadType === 'file') {
+                const files = e.dataTransfer.files;
+                if(files.length > 0) {
+                    handleFileSelect(files[0]);
+                }
+            }
+        });
+
+        // 文件选择处理
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            if(this.files.length > 0) {
+                handleFileSelect(this.files[0]);
+            }
+        });
+
+        // 处理选中的文件
+        function handleFileSelect(file) {
+            currentFile = file;
+            selectedFileName.textContent = file.name;
+            newFileName.value = file.name.split('.')[0];
+            filePreview.style.display = 'block';
+        }
+
+        // 取消上传
+        function cancelUpload() {
+            currentFile = null;
+            filePreview.style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            newFileName.value = '';
+            document.getElementById('fileLink').value = '';
+        }
+
+        // 确认上传
+        async function confirmUpload() {
+            if (!currentFile) return;
+
+            const fileLink = document.getElementById('fileLink').value.trim();
+            if (!fileLink) {
+                alert('请输入文件下载链接！');
+                return;
+            }
+
+            let finalFileName = newFileName.value.trim();
+            if (!finalFileName) {
+                finalFileName = currentFile.name.split('.')[0];
+            }
+            finalFileName = `${finalFileName}.${currentFile.name.split('.').pop()}`;
+
+            // 显示需要添加到 data.json 的内容
+            alert('管理员提示：请手动更新 data.json 文件添加以下内容：\n\n' + 
+                JSON.stringify({
+                    name: finalFileName,
+                    link: fileLink,
+                    size: formatFileSize(currentFile.size),
+                    uploadTime: new Date().toLocaleString()
+                }, null, 2));
+
+            cancelUpload();
+        }
+                // 提交文章
+                function submitArticle() {
+            const title = document.getElementById('articleTitle').value.trim();
+            const content = document.getElementById('articleContent').value.trim();
+            
+            if(!title || !content) {
+                alert('标题和内容不能为空！');
+                return;
+            }
+
+            // 显示需要添加到 data.json 的内容
+            alert('管理员提示：请手动更新 data.json 文件添加以下内容：\n\n' + 
+                JSON.stringify({
+                    title: title,
+                    content: content,
+                    uploadTime: new Date().toLocaleString()
+                }, null, 2));
+            
+            document.getElementById('articleTitle').value = '';
+            document.getElementById('articleContent').value = '';
+        }
+
+        // 更新文件列表
+        async function updateFileList(userType) {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                const files = data.files;
+                const fileList = document.getElementById('fileList');
+                fileList.innerHTML = '';
+                
+                files.forEach((file, index) => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'file-item';
+                    
+                    let html = `
+                        <h3>${file.name}</h3>
+                        <p>上传时间: ${file.uploadTime}</p>
+                        <p>文件大小: ${file.size}</p>
+                        <a href="${file.link}" target="_blank" class="download-btn">访问下载链接</a>
+                    `;
+                    
+                    if(userType === 'admin') {
+                        html += `<button class="delete-btn" onclick="deleteFile(${index})">删除</button>`;
+                    }
+                    
+                    fileItem.innerHTML = html;
+                    fileList.appendChild(fileItem);
+                });
+            } catch (error) {
+                console.error('Error loading files:', error);
+            }
+        }
+
+        // 更新文章列表
+        async function updateArticleList(userType) {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                const articles = data.articles;
+                const articleList = document.getElementById('articleList');
+                articleList.innerHTML = '';
+                
+                articles.forEach((article, index) => {
+                    const articleItem = document.createElement('div');
+                    articleItem.className = 'article-item';
+                    
+                    let html = `
+                        <h3>${article.title}</h3>
+                        <p>发布时间: ${article.uploadTime}</p>
+                        <button onclick="viewArticle(${index})">查看文章</button>
+                    `;
+                    
+                    if(userType === 'admin') {
+                        html += `<button class="delete-btn" onclick="deleteArticle(${index})">删除</button>`;
+                    }
+                    
+                    articleItem.innerHTML = html;
+                    articleList.appendChild(articleItem);
+                });
+            } catch (error) {
+                console.error('Error loading articles:', error);
+            }
+        }
+
+        // 查看文章
+        async function viewArticle(index) {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                const article = data.articles[index];
+                
+                document.getElementById('articleViewTitle').textContent = article.title;
+                document.getElementById('articleBody').textContent = article.content;
+                document.getElementById('articleOverlay').style.display = 'block';
+                document.getElementById('articleContent').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading article:', error);
+            }
+        }
+
+        // 关闭文章
+        function closeArticle() {
+            document.getElementById('articleOverlay').style.display = 'none';
+            document.getElementById('articleContent').style.display = 'none';
+        }
+
+        // 删除文件
+        function deleteFile(index) {
+            alert(`请从 data.json 文件中删除索引为 ${index} 的文件`);
+        }
+
+        // 删除文章
+        function deleteArticle(index) {
+            alert(`请从 data.json 文件中删除索引为 ${index} 的文章`);
+        }
+
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // 退出登录
+        function logout() {
+            loginPage.style.display = 'flex';
+            contentPage.style.display = 'none';
+            document.getElementById('password').value = '';
+        }
+
+        // 页面加载时初始化主题
+        document.addEventListener('DOMContentLoaded', initTheme);
+    </script>
+</body>
+</html>
